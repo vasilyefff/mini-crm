@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 export default function Layout({ children }) {
 	return (
 		<div style={{ display: "flex", minHeight: "100vh" }}>
@@ -8,7 +10,34 @@ export default function Layout({ children }) {
 					padding: "16px",
 				}}
 			>
-				Sidebar
+				<h3>Mini CRM</h3>
+
+				<ul>
+					<li>
+						<NavLink
+							to="/"
+							style={({ isActive }) => ({
+								fontWeight: isActive ? "bold" : "normal",
+							})}
+						>
+							Dashboard
+						</NavLink>
+
+					</li>
+
+					<li>
+						<NavLink to="/clients" style={({ isActive }) => ({
+							fontWeight: isActive ? "bold" : "normal"
+						})}>Clients</NavLink>
+					</li>
+
+					<li>
+						<NavLink to="/deals" style={({ isActive }) => ({
+							fontWeight: isActive ? "bold" : "normal"
+						})}>Deals</NavLink>
+					</li>
+				</ul>
+
 			</aside>
 
 			<main style={{ flex: 1, padding: "16px" }}>{children}</main>
