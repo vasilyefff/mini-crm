@@ -1,9 +1,17 @@
 import { clients } from "../data/clients";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ClientsPage() {
-	const [clientsList, setClientsList] = useState(clients);
+	const [clientsList, setClientsList] = useState(() => {
+		const stored = localStorage.getItem("clients");
+		return stored ? JSON.parse(stored) : clients;
+	});
 	const [newClientName, setNewClientName] = useState("");
+
+	useEffect(() => {
+		localStorage.setItem("clients", JSON.stringify(clientsList));
+	}, [clientsList]);
+
 
 	const handleDeleteClient = (id) => {
 		setClientsList((prev) => prev.filter((client) => client.id !== id));
