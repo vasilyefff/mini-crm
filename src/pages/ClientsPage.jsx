@@ -1,12 +1,17 @@
-import { clients } from "../data/clients";
 import { useState, useEffect } from "react";
 
 export default function ClientsPage() {
 	const [clientsList, setClientsList] = useState(() => {
 		const stored = localStorage.getItem("clients");
-		return stored ? JSON.parse(stored) : clients;
+		return stored ? JSON.parse(stored) : [];
 	});
 	const [newClientName, setNewClientName] = useState("");
+
+	useEffect(() => {
+		fetch("http://localhost:4000/clients")
+			.then(res => res.json())
+			.then(data => setClientsList(data));
+	}, []);
 
 	useEffect(() => {
 		localStorage.setItem("clients", JSON.stringify(clientsList));
