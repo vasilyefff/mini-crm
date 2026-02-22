@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 
 export default function ClientsPage() {
-	const [clientsList, setClientsList] = useState(() => {
-		const stored = localStorage.getItem("clients");
-		return stored ? JSON.parse(stored) : [];
-	});
+	const [clientsList, setClientsList] = useState([]);
 	const [newClientName, setNewClientName] = useState("");
 
 	useEffect(() => {
@@ -13,29 +10,34 @@ export default function ClientsPage() {
 			.then(data => setClientsList(data));
 	}, []);
 
-	useEffect(() => {
-		localStorage.setItem("clients", JSON.stringify(clientsList));
-	}, [clientsList]);
-
 
 	const handleDeleteClient = (id) => {
-		setClientsList((prev) => prev.filter((client) => client.id !== id));
+		fetch(`http://localhost:4000/clients/${id}`, {
+			method: "DELETE",
+		})
+			.then(() => {
+				setClientsList(prev => prev.filter(client => client.id !== id));
+			});
 	};
 
 	const handleAddClient = () => {
 		if (!newClientName) return;
 
-		const newClient = {
-			id: Date.now(),
-			name: newClientName,
-			email: "new@test.com",
-			status: "active",
-		};
-
-		setClientsList((prev) => [...prev, newClient]);
-		setNewClientName("");
+		fetch("http://localhost:4000/clients", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: newClientName,
+			}),
+		})
+			.then(res => res.json())
+			.then(createdClient => {
+				setClientsList(prev => [...prev, createdClient]);
+				setNewClientName("");
+			});
 	};
-
 
 	return (
 		<div>
