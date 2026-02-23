@@ -1,7 +1,8 @@
+import { Client } from "../types/clients";
 import { useState, useEffect } from "react";
 
 export default function ClientsPage() {
-	const [clientsList, setClientsList] = useState([]);
+	const [clientsList, setClientsList] = useState<Client[]>([]);
 	const [newClientName, setNewClientName] = useState("");
 
 	useEffect(() => {
@@ -11,7 +12,7 @@ export default function ClientsPage() {
 	}, []);
 
 
-	const handleDeleteClient = (id) => {
+	const handleDeleteClient = (id: number) => {
 		fetch(`http://localhost:4000/clients/${id}`, {
 			method: "DELETE",
 		})
