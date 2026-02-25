@@ -1,5 +1,6 @@
-import { Client } from "../types/clients";
 import { useState, useEffect } from "react";
+import type { ChangeEvent } from "react";
+import type { Client } from "../types/client";
 
 export default function ClientsPage() {
 	const [clientsList, setClientsList] = useState<Client[]>([]);
@@ -8,17 +9,15 @@ export default function ClientsPage() {
 	useEffect(() => {
 		fetch("http://localhost:4000/clients")
 			.then(res => res.json())
-			.then(data => setClientsList(data));
+			.then((data: Client[]) => setClientsList(data));
 	}, []);
-
 
 	const handleDeleteClient = (id: number) => {
 		fetch(`http://localhost:4000/clients/${id}`, {
 			method: "DELETE",
-		})
-			.then(() => {
-				setClientsList(prev => prev.filter(client => client.id !== id));
-			});
+		}).then(() => {
+			setClientsList(prev => prev.filter(client => client.id !== id));
+		});
 	};
 
 	const handleAddClient = () => {
@@ -34,7 +33,7 @@ export default function ClientsPage() {
 			}),
 		})
 			.then(res => res.json())
-			.then(createdClient => {
+			.then((createdClient: Client) => {
 				setClientsList(prev => [...prev, createdClient]);
 				setNewClientName("");
 			});
@@ -43,22 +42,24 @@ export default function ClientsPage() {
 	return (
 		<div>
 			<h2>Clients</h2>
+
 			<input
 				placeholder="Client name"
 				value={newClientName}
-				onChange={(e) => setNewClientName(e.target.value)}
+				onChange={(e: ChangeEvent<HTMLInputElement>) =>
+					setNewClientName(e.target.value)
+				}
 			/>
 
-			<button onClick={handleAddClient}>
-				Add client
-			</button>
+			<button onClick={handleAddClient}>Add client</button>
 
-
-			{clientsList.length === 0 ? (<p>No clients yet</p>) : (
+			{clientsList.length === 0 ? (
+				<p>No clients yet</p>
+			) : (
 				<ul>
-					{clientsList.map((client) => (
+					{clientsList.map(client => (
 						<li key={client.id}>
-							{client.name} — {client.email}
+							{client.name}
 							<button onClick={() => handleDeleteClient(client.id)}>
 								Delete
 							</button>
@@ -67,7 +68,5 @@ export default function ClientsPage() {
 				</ul>
 			)}
 		</div>
-
 	);
-
 }
