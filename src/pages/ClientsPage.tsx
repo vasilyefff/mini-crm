@@ -1,72 +1,68 @@
-import { useState, useEffect } from "react";
-import type { ChangeEvent } from "react";
-import type { Client } from "../types/client";
+import { useState, useEffect } from 'react'
+import type { ChangeEvent } from 'react'
+import type { Client } from '../types/client'
 
 export default function ClientsPage() {
-	const [clientsList, setClientsList] = useState<Client[]>([]);
-	const [newClientName, setNewClientName] = useState("");
+  const [clientsList, setClientsList] = useState<Client[]>([])
+  const [newClientName, setNewClientName] = useState('')
 
-	useEffect(() => {
-		fetch("http://localhost:4000/clients")
-			.then(res => res.json())
-			.then((data: Client[]) => setClientsList(data));
-	}, []);
+  useEffect(() => {
+    fetch('http://localhost:4000/clients')
+      .then((res) => res.json())
+      .then((data: Client[]) => setClientsList(data))
+  }, [])
 
-	const handleDeleteClient = (id: number) => {
-		fetch(`http://localhost:4000/clients/${id}`, {
-			method: "DELETE",
-		}).then(() => {
-			setClientsList(prev => prev.filter(client => client.id !== id));
-		});
-	};
+  const handleDeleteClient = (id: number) => {
+    fetch(`http://localhost:4000/clients/${id}`, {
+      method: 'DELETE',
+    }).then(() => {
+      setClientsList((prev) => prev.filter((client) => client.id !== id))
+    })
+  }
 
-	const handleAddClient = () => {
-		if (!newClientName) return;
+  const handleAddClient = () => {
+    if (!newClientName) return
 
-		fetch("http://localhost:4000/clients", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: newClientName,
-			}),
-		})
-			.then(res => res.json())
-			.then((createdClient: Client) => {
-				setClientsList(prev => [...prev, createdClient]);
-				setNewClientName("");
-			});
-	};
+    fetch('http://localhost:4000/clients', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: newClientName,
+      }),
+    })
+      .then((res) => res.json())
+      .then((createdClient: Client) => {
+        setClientsList((prev) => [...prev, createdClient])
+        setNewClientName('')
+      })
+  }
 
-	return (
-		<div>
-			<h2>Clients</h2>
+  return (
+    <div>
+      <h2>Clients</h2>
 
-			<input
-				placeholder="Client name"
-				value={newClientName}
-				onChange={(e: ChangeEvent<HTMLInputElement>) =>
-					setNewClientName(e.target.value)
-				}
-			/>
+      <input
+        placeholder="Client name"
+        value={newClientName}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => setNewClientName(e.target.value)}
+      />
 
-			<button onClick={handleAddClient}>Add client</button>
+      <button onClick={handleAddClient}>Add client</button>
 
-			{clientsList.length === 0 ? (
-				<p>No clients yet</p>
-			) : (
-				<ul>
-					{clientsList.map(client => (
-						<li key={client.id}>
-							{client.name}
-							<button onClick={() => handleDeleteClient(client.id)}>
-								Delete
-							</button>
-						</li>
-					))}
-				</ul>
-			)}
-		</div>
-	);
+      {clientsList.length === 0 ? (
+        <p>No clients yet</p>
+      ) : (
+        <ul>
+          {clientsList.map((client) => (
+            <li key={client.id}>
+              {client.name}
+              <button onClick={() => handleDeleteClient(client.id)}>Delete</button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
 }
