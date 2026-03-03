@@ -1,68 +1,84 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import type { RootState, AppDispatch } from '../app/store'
+import { fetchClients } from '../features/clients/clientsSlice'
 import type { Client } from '../types/client'
 
 export default function ClientsPage() {
-  const [clientsList, setClientsList] = useState<Client[]>([])
-  const [newClientName, setNewClientName] = useState('')
+	const dispatch = useDispatch<AppDispatch>()
 
-  useEffect(() => {
-    fetch('http://localhost:4000/clients')
-      .then((res) => res.json())
-      .then((data: Client[]) => setClientsList(data))
-  }, [])
+	const { clients, status, error } = useSelector(
+		(state: RootState) => state.clients
+	)
 
-  const handleDeleteClient = (id: number) => {
-    fetch(`http://localhost:4000/clients/${id}`, {
-      method: 'DELETE',
-    }).then(() => {
-      setClientsList((prev) => prev.filter((client) => client.id !== id))
-    })
-  }
+	const [newClientName, setNewClientName] = useState('')
 
-  const handleAddClient = () => {
-    if (!newClientName) return
+	useEffect(() => {
+		if (status === 'idle') {
+			dispatch(fetchClients())
+		}
+	}, [status, dispatch])
 
-    fetch('http://localhost:4000/clients', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: newClientName,
-      }),
-    })
-      .then((res) => res.json())
-      .then((createdClient: Client) => {
-        setClientsList((prev) => [...prev, createdClient])
-        setNewClientName('')
-      })
-  }
+	const handleAddClient = async () => {
+		if (!newClientName) return
 
-  return (
-    <div>
-      <h2>Clients</h2>
+		await fetch('http://localhost:4000/clients', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name: newClientName,
+			}),
+		})
 
-      <input
-        placeholder="Client name"
-        value={newClientName}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setNewClientName(e.target.value)}
-      />
+		dispatch(fetchClients())
+		setNewClientName('')
+	}
 
-      <button onClick={handleAddClient}>Add client</button>
+	const handleDeleteClient = async (id: number) => {
+		await fetch(`http://localhost:4000/clients/${id}`, {
+			method: 'DELETE',
+		})
 
-      {clientsList.length === 0 ? (
-        <p>No clients yet</p>
-      ) : (
-        <ul>
-          {clientsList.map((client) => (
-            <li key={client.id}>
-              {client.name}
-              <button onClick={() => handleDeleteClient(client.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
+		dispatch(fetchClients())
+	}
+
+	return (
+		<div>
+			<h2>Clients</h2>
+
+			<input
+				placeholder="Client name"
+				value={newClientName}
+				onChange={(e: ChangeEvent<HTMLInputElement>) =>
+					setNewClientName(e.target.value)
+				}
+			/>
+
+			<button onClick={handleAddClient}>Add client</button>
+
+			{status === 'loading' && <p>Loading...</p>}
+
+			{status === 'failed' && <p>Error: {error}</p>}
+
+			{status === 'succeeded' && clients.length === 0 && (
+				<p>No clients yet</p>
+			)}
+
+			{status === 'succeeded' && clients.length > 0 && (
+				<ul>
+					{clients.map((client: Client) => (
+						<li key={client.id}>
+							{client.name}
+							<button onClick={() => handleDeleteClient(client.id)}>
+								Delete
+							</button>
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+	)
 }
