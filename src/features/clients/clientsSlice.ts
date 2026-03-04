@@ -13,7 +13,7 @@ const initialState: ClientsState = {
 	error: null,
 }
 
-// 🔹 Async загрузка клиентов
+
 export const fetchClients = createAsyncThunk<Client[]>(
 	'clients/fetchClients',
 	async () => {
@@ -24,6 +24,40 @@ export const fetchClients = createAsyncThunk<Client[]>(
 		}
 
 		return response.json()
+	}
+)
+
+export const addClient = createAsyncThunk<Client, string>(
+	'clients/addClient',
+	async (name: string) => {
+		const response = await fetch('http://localhost:4000/clients', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ name }),
+		})
+
+		if (!response.ok) {
+			throw new Error('Failed to add client')
+		}
+
+		return response.json()
+	}
+)
+
+export const deleteClient = createAsyncThunk<number, number>(
+	'clients/deleteClient',
+	async (id: number) => {
+		const response = await fetch(`http://localhost:4000/clients/${id}`, {
+			method: 'DELETE',
+		})
+
+		if (!response.ok) {
+			throw new Error('Failed to delete client')
+		}
+
+		return id
 	}
 )
 
@@ -44,6 +78,16 @@ const clientsSlice = createSlice({
 			.addCase(fetchClients.rejected, (state, action) => {
 				state.status = 'failed'
 				state.error = action.error.message || 'Something went wrong'
+			})
+
+			.addCase(addClient.fulfilled, (state, action) => {
+				state.clients.push(action.payload)
+			})
+
+			.addCase(deleteClient.fulfilled, (state, action) => {
+				state.clients = state.clients.filter(
+					client => client.id !== action.payload
+				)
 			})
 	},
 })

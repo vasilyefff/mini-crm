@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from '../app/store'
-import { fetchClients } from '../features/clients/clientsSlice'
+import {
+	fetchClients,
+	addClient,
+	deleteClient,
+} from '../features/clients/clientsSlice'
 import type { Client } from '../types/client'
 
 export default function ClientsPage() {
@@ -20,29 +24,15 @@ export default function ClientsPage() {
 		}
 	}, [status, dispatch])
 
-	const handleAddClient = async () => {
+	const handleAddClient = () => {
 		if (!newClientName) return
 
-		await fetch('http://localhost:4000/clients', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name: newClientName,
-			}),
-		})
-
-		dispatch(fetchClients())
+		dispatch(addClient(newClientName))
 		setNewClientName('')
 	}
 
-	const handleDeleteClient = async (id: number) => {
-		await fetch(`http://localhost:4000/clients/${id}`, {
-			method: 'DELETE',
-		})
-
-		dispatch(fetchClients())
+	const handleDeleteClient = (id: number) => {
+		dispatch(deleteClient(id))
 	}
 
 	return (
