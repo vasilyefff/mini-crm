@@ -11,6 +11,7 @@ export default defineConfig([
 
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
+    ignores: ['server/**/*.js'],
 
     extends: [
       js.configs.recommended,
@@ -39,6 +40,21 @@ export default defineConfig([
 
       // включаем TS-версию
       '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+
+  {
+    files: ['server/**/*.js'],
+
+    languageOptions: {
+      parser: undefined,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: globals.node,
+    },
+
+    rules: {
+      'no-unused-vars': 'off',
     },
   },
 ])
