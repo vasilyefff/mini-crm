@@ -113,7 +113,7 @@ export default function DealsPage() {
 								<span style={{ color: dealStatusColor[deal.status] }}>
 									{deal.status}
 								</span>
-								<button onClick={() => handleDeleteDeal(deal.id)}>
+								<button className="danger" onClick={() => handleDeleteDeal(deal.id)}>
 									Delete
 								</button>
 							</li>

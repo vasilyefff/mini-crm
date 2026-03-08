@@ -6,38 +6,17 @@ import ClientsPage from './pages/ClientsPage'
 import DealsPage from './pages/DealsPage'
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
+	return (
+		<Routes>
+			<Route path="/login" element={<LoginPage />} />
 
-      <Route
-        path="/"
-        element={
-          <Layout>
-            <DashboardPage />
-          </Layout>
-        }
-      />
-
-      <Route
-        path="/clients"
-        element={
-          <Layout>
-            <ClientsPage />
-          </Layout>
-        }
-      />
-
-      <Route
-        path="/deals"
-        element={
-          <Layout>
-            <DealsPage />
-          </Layout>
-        }
-      />
-    </Routes>
-  )
+			<Route path="/" element={<Layout />}>
+				<Route index element={<DashboardPage />} />
+				<Route path="clients" element={<ClientsPage />} />
+				<Route path="deals" element={<DealsPage />} />
+			</Route>
+		</Routes>
+	)
 }
 
 export default App

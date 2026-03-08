@@ -62,7 +62,7 @@ export default function ClientsPage() {
 					{clients.map((client: Client) => (
 						<li key={client.id}>
 							{client.name}
-							<button onClick={() => handleDeleteClient(client.id)}>
+							<button className="danger" onClick={() => handleDeleteClient(client.id)}>
 								Delete
 							</button>
 						</li>
