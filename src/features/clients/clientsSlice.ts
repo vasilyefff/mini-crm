@@ -17,7 +17,7 @@ const initialState: ClientsState = {
 export const fetchClients = createAsyncThunk<Client[]>(
 	'clients/fetchClients',
 	async () => {
-		const response = await fetch('http://localhost:4000/clients')
+		const response = await fetch('https://mini-crm-api-s2zd.onrender.com/clients')
 
 		if (!response.ok) {
 			throw new Error('Failed to fetch clients')
@@ -30,7 +30,7 @@ export const fetchClients = createAsyncThunk<Client[]>(
 export const addClient = createAsyncThunk<Client, string>(
 	'clients/addClient',
 	async (name: string) => {
-		const response = await fetch('http://localhost:4000/clients', {
+		const response = await fetch('https://mini-crm-api-s2zd.onrender.com/clients', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export const addClient = createAsyncThunk<Client, string>(
 export const deleteClient = createAsyncThunk<number, number>(
 	'clients/deleteClient',
 	async (id: number) => {
-		const response = await fetch(`http://localhost:4000/clients/${id}`, {
+		const response = await fetch(`https://mini-crm-api-s2zd.onrender.com/clients/${id}`, {
 			method: 'DELETE',
 		})
 
