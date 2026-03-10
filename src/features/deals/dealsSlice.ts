@@ -16,7 +16,7 @@ const initialState: DealsState = {
 export const fetchDeals = createAsyncThunk<Deal[]>(
 	'deals/fetchDeals',
 	async () => {
-		const response = await fetch('http://localhost:4000/deals')
+		const response = await fetch('https://mini-crm-api-s2zd.onrender.com/deals')
 
 		if (!response.ok) {
 			throw new Error('Failed to fetch deals')
@@ -29,7 +29,7 @@ export const fetchDeals = createAsyncThunk<Deal[]>(
 export const addDeal = createAsyncThunk<Deal, Deal>(
 	'deals/addDeal',
 	async (deal: Deal) => {
-		const response = await fetch('http://localhost:4000/deals', {
+		const response = await fetch('https://mini-crm-api-s2zd.onrender.com/deals', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export const addDeal = createAsyncThunk<Deal, Deal>(
 export const deleteDeal = createAsyncThunk<number, number>(
 	'deals/deleteDeal',
 	async (id: number) => {
-		const response = await fetch(`http://localhost:4000/deals/${id}`, {
+		const response = await fetch(`https://mini-crm-api-s2zd.onrender.com/deals/${id}`, {
 			method: 'DELETE',
 		})
 
