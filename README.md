@@ -141,9 +141,13 @@ http://localhost:4000
 
 ---
 
-# 🌐 Live Demo
+## 🌐 Live Demo
 
-После деплоя здесь появится ссылка на работающую версию проекта.
+Frontend:
+https://endearing-sunshine-9df1c2.netlify.app
+
+Backend API:
+https://mini-crm-api-s2zd.onrender.com
 
 ---
 
